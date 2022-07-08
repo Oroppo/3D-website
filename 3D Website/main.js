@@ -1,54 +1,82 @@
-import './style.css'
 
+import gsap from 'gsap'
 import * as THREE from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import  {OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
+
+import atmosphereVertexShader from './Shaders/atmosphereVertex.glsl';
+import atmosphereFragmentShader from './Shaders/atmosphereFragment.glsl';
 
 import vertexShader from './Shaders/Vertex.glsl';
 import fragmentShader from './Shaders/Fragment.glsl';
 
-console.log(vertexShader);
+const canvasContainer= document.querySelector('#CanvasContainer')
 
 const scene = new THREE.Scene();
 
 const gui = new dat.GUI();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000 );
+const guiProperties = {};
+const camera = new THREE.PerspectiveCamera(75, canvasContainer.offsetWidth/canvasContainer.offsetHeight, 0.1, 2000 );
+camera.position.setX(-2);
+camera.position.setY(-0);
+camera.position.setZ(7);
+
 
 const renderer = new THREE.WebGLRenderer({
  canvas: document.querySelector('canvas'),
+ antialias: true
 })
 
 renderer.setPixelRatio(window.devicePixelRatio );
-renderer.setSize(window.innerWidth, window.innerHeight);
-//document.body.appendChild(renderer,domElement)
-camera.position.setZ(30);
+renderer.setSize(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+renderer.setClearColor("black");
+
 
 renderer.render( scene, camera );
+
+window.addEventListener('resize', onWindowResize, false)
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+    renderer.render(scene, camera)
+}
+const mouse ={
+  x: undefined,
+  y: undefined
+}
+window.addEventListener('mousemove', ()=>{
+  mouse.x = (event.clientX/innerWidth) *2-1
+  mouse.y = (event.clientY/innerHeight) *2+1
+});
+
+const controls = new OrbitControls(camera, renderer.domElement);
+// example starts here
+let gridHelper = new THREE.GridHelper(100, 100);
+scene.add(gridHelper);
+var axesHelper = new THREE.AxesHelper(1);
+axesHelper.applyMatrix(new THREE.Matrix4().makeTranslation(1.5, 0, -1.5));
+axesHelper.updateMatrixWorld(true);
+scene.add(axesHelper);
 
 const geometry = new THREE.SphereGeometry(2, 32, 32)
 const material = new THREE.MeshPhongMaterial({ color: 0x00FFFF});
 const moon = new THREE.Mesh( geometry, material);
-
 scene.add(moon)
-
-
 
 const pointLight = new THREE.PointLight(0xffffff)
 pointLight.position.set(5,5,5);
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
-//const lightHelper = new THREE.PointLightHelper(pointLight)
-//const gridHelper = new THREE.GridHelper(200,50);
-//scene.add (lightHelper, gridHelper)
-
 const cameraFolder = gui.addFolder('Camera')
 
-cameraFolder.add(camera.position,'x')
-cameraFolder.add(camera.position,'y',-30,30,0.01)
-cameraFolder.add(camera.position,'z',-30,30,0.01)
+cameraFolder.add(camera.position,'x',-100,100,0.5)
+cameraFolder.add(camera.position,'y',-100,100,0.5)
+cameraFolder.add(camera.position,'z',-100,100,0.5)
+cameraFolder.open()
 
 function addStar(){
   const geometry = new THREE.SphereGeometry(0.25,24,24);
@@ -79,45 +107,43 @@ const planet = new THREE.Mesh(
         value: planetTexture
       }
     }
-  // map: planetTexture,
-  //  normalMap: normalTexture
   })
 );
+const group = new THREE.Group()
 
-scene.add(planet);
-
-planet.position.z = 20;
-planet.position.x = -10;
-planet.position.y = -4;
-planet.rotation.x = 0.2353;
+group.add(planet)
+scene.add(group)
 planet.attach(moon);
 
-
-
-/*
-function moveCamera(){
-  const t = document.body.getBoundingClientRect().top;
-  
-  camera.rotation.x = t * -0.0001;
-  camera.rotation.y = t * -0.0002;
-  camera.rotation.z = t * -0.0002;
-}
-
-document.body.onscroll = moveCamera;
-*/
-
+const atmosphere = new THREE.Mesh(
+  new THREE.SphereGeometry(3,32,32),
+  new THREE.ShaderMaterial( {
+    vertexShader: atmosphereVertexShader,
+    fragmentShader: atmosphereFragmentShader,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide
+  })
+);
+atmosphere.scale.set(1.1, 1.1, 1.1);
+atmosphere.rotation.x = 0.2353;
+scene.add(atmosphere);
 
 function animate(){
 
   requestAnimationFrame(animate);
-  planet.rotation.y += 0.01;
-  moon.rotation.x += 0.01;
-  moon.rotation.y += 0.005;
-  moon.rotation.z += 0.01;
-
-  //console.log(moon.getWorldPosition());
-
   renderer.render( scene, camera );
+  planet.rotation.y += 0.005;
+
+  gsap.to(group.rotation,{
+    x: mouse.y*0.5,
+    y: mouse.x*0.5,
+    duration: 2
+  })
+ // moon.rotation.x += 0.01;
+ // moon.rotation.y += 0.005;
+  //moon.rotation.z += 0.01;
+
+
 
 }
 

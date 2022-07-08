@@ -2,78 +2,142 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dante Arruda</title>
+    <link href ="tailwind.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+      body {
+        margin: 0;
+        -webkit-font-smoothing:
+        antialiased;
+      }
+      .font-orbitron{
+        font-family: 'Lato', sans-serif;
+      } 
+      .font-lato{
+        font-family: 'Orbitron', sans-serif;
+      } 
+      img{
+        display: block;
+        width: 200;
+        height: 200;
+      }
+    </style>
   </head>
+  <nav class="bg-gray-800 fixed w-screen">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+      <div class="relative flex items-center justify-between h-16">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <!-- Mobile menu button-->
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <!--
+              Icon when menu is closed.
+  
+              Heroicon name: outline/menu
+  
+              Menu open: "hidden", Menu closed: "block"
+            -->
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <!--
+              Icon when menu is open.
+  
+              Heroicon name: outline/x
+  
+              Menu open: "block", Menu closed: "hidden"
+            -->
+            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+          <div class="hover:bg-gray-700 px-1 py-1 rounded-md flex-shrink-0 flex items-center">
+            <a href=""> <img class="  block lg:hidden h-16 w-auto" src="MyLogo.png" alt="Workflow"></a>
+            <a href=""> <img class="hidden lg:block h-16 w-auto" src="MyLogo.png" alt="Workflow"></a>
+          </div>
+          <div class="hidden sm:block sm:ml-6">
+            <div class="flex space-x-4">
+              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+              
+              <a href="#" class="text-gray-300 
+              hover:bg-gray-700 hover:text-white
+              focus:bg-green-600 focus:text-white
+              px-6 py-4 rounded-md text-2xl font-medium">Bio</a>
+              
+              <a href="#" class="text-gray-300 
+              hover:bg-gray-700 hover:text-white
+              focus:bg-green-600 focus:text-white
+              px-6 py-4 rounded-md text-2xl font-medium">My Teams</a>
+  
+              <a href="#" class="text-gray-300 
+              hover:bg-gray-700 hover:text-white
+              focus:bg-green-600 focus:text-white
+              px-6 py-4 rounded-md text-2xl font-medium">Previous Projects</a>
+            </div>
+          </div>
+        </div>
+  
+            <!--
+              Dropdown menu, show/hide based on menu state.
+  
+              Entering: "transition ease-out duration-100"
+                From: "transform opacity-0 scale-95"
+                To: "transform opacity-100 scale-100"
+              Leaving: "transition ease-in duration-75"
+                From: "transform opacity-100 scale-100"
+                To: "transform opacity-0 scale-95"
+                <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                  <.!-- Active: "bg-gray-100", Not Active: "" --.>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                </div>
+              -->
+      </div>
+    </div>
+  
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="sm:hidden" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+        <a href="#" class="bg-gray-900 hover:bg-gray-700 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Dashboard</a>
+  
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Team</a>
+  
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Projects</a>
+  
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Calendar</a>
+      </div>
+    </div>
+  </nav>
   <body>
-    <canvas id = "bg"> </canvas>
-
-    <main>
-      <header>
-        <h1>My Name Is Dante Arruda</h1>
-        <p> Welcome!</p>
-      </header>
-
-      <section class="left">
-        <h3>I love Games!</h3>
-
-        <p>
-          I adore the idea of building up a world seperate from our own;
-          fit with it's own rules and history, it's an amazing feeling to be 
-          a part of something so special. I think that games give people
-          the unique oppurtunity to connect with others in ways that just
-          aren't otherwise possible and I want to facilitate those connections as 
-          much as possible.
-        </p>
-      </section>
-
-      <section>
-        <h2>Primary Skills:</h2>
-        <p>
-          I do most of my work in C++ and C#. I specialise in Graphics Programming and Sound Design.
-          I've created Graphics Engines and systems using OpenGL to promote portability.
-          I work in FL Studio to create my music and implement them using the FMOD API and it's Event Systems.         
-          I also have some minor experience in Design and 3D Modelling/Animations.
-        </p>
-      </section>
-
-      <section class="left">
-        <h2>🌮 Work History</h2>
-
-        <h3>McDonalds</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <h3>Burger King</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <h3>Taco Bell</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-      </section>
-
-      <section class="light">
-        <h2>👩🏽‍🚀 Projects</h2>
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <h2>🏆 Accomplishments</h2>
-
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-      </section>
-
-    </main>
-
-    <div id="app"></div>
+      <div class = "flex h-screen bg-black">
+        <div class = "w-1/2 flex flex-col justify-center px-8">
+          <div style="max-width:900px;">
+            <h1 class="text-white text-9xl mb-8 font-orbitron">My Name Is Dante Arruda...</h1>        
+            <p class="text-gray-200 text-3xl mb-8 font-lato z-1">       
+              Here you can learn everything there is to know about my work throughout my Professional Career!
+            </p>
+            <div>
+              <a href=""
+              class="text-white bg-green-600 inline-block px-8 py-4 rounded-full">
+              Get Started! 
+            </a>
+          </div>
+        </div>
+      </div>
+        
+        <div class = "w-1/2" id = "CanvasContainer">
+          <canvas > </canvas>
+        </div>
+      </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
