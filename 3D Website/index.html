@@ -58,7 +58,7 @@
           </button>
         </div>
         <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-          <div class="hover:bg-gray-700 px-1 py-1 rounded-md flex-shrink-0 flex items-center">
+          <div class="hover:bg-gray-700 px-1 py-1 rounded-md flex-shrink-0 flex items-center transition ease-out duration-500 ">
             <a href=""> <img class="  block lg:hidden h-16 w-auto" src="MyLogo.png" alt="Workflow"></a>
             <a href=""> <img class="hidden lg:block h-16 w-auto" src="MyLogo.png" alt="Workflow"></a>
           </div>
@@ -69,17 +69,17 @@
               <a href="#" class="text-gray-300 
               hover:bg-gray-700 hover:text-white
               focus:bg-green-600 focus:text-white
-              px-6 py-4 rounded-md text-2xl font-medium">Bio</a>
+              px-6 py-4 rounded-md text-2xl font-medium transition ease-out duration-500 " id = "Bio">Bio</a>
               
               <a href="#" class="text-gray-300 
               hover:bg-gray-700 hover:text-white
               focus:bg-green-600 focus:text-white
-              px-6 py-4 rounded-md text-2xl font-medium">My Teams</a>
+              px-6 py-4 rounded-md text-2xl font-medium transition ease-out duration-500 " id = "Teams">My Teams</a>
   
               <a href="#" class="text-gray-300 
               hover:bg-gray-700 hover:text-white
               focus:bg-green-600 focus:text-white
-              px-6 py-4 rounded-md text-2xl font-medium">Previous Projects</a>
+              px-6 py-4 rounded-md text-2xl font-medium transition ease-out duration-500 " id = "Projects">Previous Projects</a>
             </div>
           </div>
         </div>
@@ -122,12 +122,12 @@
         <div class = "w-1/2 flex flex-col justify-center px-8">
           <div style="max-width:900px;">
             <h1 class="text-white text-9xl mb-8 font-orbitron">My Name Is Dante Arruda...</h1>        
-            <p class="text-gray-200 text-3xl mb-8 font-lato z-1">       
+            <p class="text-gray-200 text-3xl mb-8 font-lato z-1 animate-pulse">       
               Here you can learn everything there is to know about my work throughout my Professional Career!
             </p>
             <div>
               <a href=""
-              class="text-white bg-green-600 inline-block px-8 py-4 rounded-full">
+              class="hover:bg-green-600 text-3xl text-white bg-green-700 inline-block px-12 py-8 rounded-full" id = "Projects">
               Get Started! 
             </a>
           </div>
@@ -139,5 +139,6 @@
         </div>
       </div>
     <script type="module" src="/main.js"></script>
+    <script src="/ButtonInteractions.js"></script>
   </body>
 </html>
