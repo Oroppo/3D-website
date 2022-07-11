@@ -10,7 +10,7 @@ import atmosphereFragmentShader from './Shaders/atmosphereFragment.glsl';
 
 import vertexShader from './Shaders/Vertex.glsl';
 import fragmentShader from './Shaders/Fragment.glsl';
-import { NoToneMapping } from 'three';
+import { Float32BufferAttribute, NoToneMapping } from 'three';
 
 const canvasContainer= document.querySelector('#CanvasContainer')
 
@@ -43,13 +43,22 @@ camera.add(listener);
 
 const audioloader = new THREE.AudioLoader()
 const BGM = new THREE.Audio(listener);
+const Selection = new THREE.Audio(listener);
 
-audioloader.load('../sounds/BGM.mp3', function(buffer){
+audioloader.load('../sounds/BGM1.wav', function(buffer){
   BGM.setBuffer(buffer)
   BGM.setLoop(true)
   BGM.setVolume(0.4)
-  BGM.play();
+  //BGM.play();
 })
+audioloader.load('../sounds/Menu Selection click.wav', function(buffer){
+  Selection.setBuffer(buffer)
+  Selection.setLoop(false)
+  Selection.setVolume(1.0)
+
+})
+
+//TODO: Add selection noise + functionality
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -76,31 +85,34 @@ axesHelper.applyMatrix(new THREE.Matrix4().makeTranslation(1.5, 0, -1.5));
 axesHelper.updateMatrixWorld(true);
 scene.add(axesHelper);
 
+const moonTexture = new THREE.TextureLoader().load('Moon.jpg')
 const geometry = new THREE.SphereGeometry(2, 32, 32)
-const material = new THREE.MeshPhongMaterial({ color: 0x00FFFF});
+const material = new THREE.MeshPhongMaterial({ map: moonTexture});
 const moon = new THREE.Mesh( geometry, material);
 scene.add(moon)
+moon.position.x = 20;
+moon.position.y = 5.5;
 
 const pointLight = new THREE.PointLight(0xffffff)
 pointLight.position.set(5,5,5);
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
+const starGeometry =new THREE.BufferGeometry()
+const starMaterial = new THREE.PointsMaterial({
+  color: 0xffffff
+})
+const stars = new THREE.Points(starGeometry, starMaterial)
+scene.add(stars)
 
-
-function addStar(){
-  const geometry = new THREE.BufferGeometry(0.25,24,24);
-  const material = new THREE.PointsMaterial({color: 0xffffff})
-  const star = new THREE.Mesh(geometry, material);
-
-  const [x,y,z] = Array(3).fill().map(()=>THREE.MathUtils.randFloatSpread(100));
-
-  star.position.set(x,y,z);
-  scene.add(star);
+const starVertices = []
+for (let i=0; i<10000;i++){
+  const x = (Math.random()-0.5)*2000;
+  const y = (Math.random()-0.5)*2000;
+  const z = -Math.random()*2000;
+  starVertices.push(x,y,z)
 }
-Array(200).fill().forEach(addStar);
-
-
+starGeometry.setAttribute('position',new THREE.Float32BufferAttribute(starVertices, 3))
 
 const planetTexture = new THREE.TextureLoader().load('Earth.jpg');
 const normalTexture = new THREE.TextureLoader().load('NormalMap.jpg');
@@ -123,12 +135,15 @@ const planet = new THREE.Mesh(
     }
   })
 );
-planet.rotation.x = -0.5
+planet.rotation.x = 0.2
+planet.rotation.y = -0.2
+planet.rotation.z = 0.3
 const group = new THREE.Group()
 
 group.add(planet)
+group.add(moon)
 scene.add(group)
-planet.attach(moon);
+//planet.attach(moon);
 
 const atmosphere = new THREE.Mesh(
   new THREE.SphereGeometry(3,32,32),
@@ -146,13 +161,23 @@ scene.add(atmosphere);
 
 const planetFolder = gui.addFolder('Planet')
 
-planetFolder.add(planet.rotation,'x', -1, 1,0.01)
-planetFolder.add(planet.rotation,'y', -1, 1,0.01)
-planetFolder.add(planet.rotation,'z', -1, 1,0.01)
+planetFolder.add(planet.rotation,'x', -3, 3,0.01)
+planetFolder.add(planet.rotation,'y', -3, 3,0.01)
+planetFolder.add(planet.rotation,'z', -3, 3,0.01)
 planetFolder.add(planet.position,'x', -60, 60,0.5)
 planetFolder.add(planet.position,'y', -60, 60,0.5)
 planetFolder.add(planet.position,'z', -60, 60,0.5)
 planetFolder.open()
+
+const moonFolder = gui.addFolder('Moon')
+
+moonFolder.add(moon.rotation,'x', -1, 1,0.01)
+moonFolder.add(moon.rotation,'y', -1, 1,0.01)
+moonFolder.add(moon.rotation,'z', -1, 1,0.01) 
+moonFolder.add(moon.position,'x', -60, 60,0.5)
+moonFolder.add(moon.position,'y', -60, 60,0.5)
+moonFolder.add(moon.position,'z', -60, 60,0.5)
+moonFolder.open()
 
 const cameraFolder = gui.addFolder('Camera')
 
@@ -164,24 +189,54 @@ cameraFolder.add(camera.position,'y', -60, 60,0.5)
 cameraFolder.add(camera.position,'z', -60, 60,0.5)
 cameraFolder.open()
 
+//TODO Add the sections for each button in 3D space (Teams, Projects, Bio,  Contact)
+
+const teams = document.querySelector('#Teams')
+teams.addEventListener('mouseover',()=>{
+  Selection.play();
+}
+)
+const bio = document.querySelector('#Bio')
+bio.addEventListener('mouseover',()=>{
+  Selection.play();
+}
+)
+//TODO: Fix # names in html
+const projects = document.querySelector('#Projects')
+projects.addEventListener('mouseover',()=>{
+  Selection.play();
+}
+)
+
+const start = document.querySelector('#Start')
+start.addEventListener('mouseover',()=>{
+  Selection.play();
+}
+)
+
 function animate(){
+
+  group.rotation.y += 0.005;
+
+gsap.to(planet.rotation,{
+  x: mouse.x % planet.rotation.x,
+  y: planet.rotation.y + (mouse.y*0.5),
+  duration: 2
+})
+
+  moon.rotation.x += 0.01;
+  moon.rotation.y += 0.005;
+  moon.rotation.z += 0.01;
 
   requestAnimationFrame(animate);
   renderer.render( scene, camera );
-  planet.rotation.y += 0.005;
 
-  gsap.to(group.rotation,{
-    x: mouse.y*0.5,
-    y: mouse.x*0.5,
-    duration: 2
-  })
- // moon.rotation.x += 0.01;
- // moon.rotation.y += 0.005;
-  //moon.rotation.z += 0.01;
 
 
 
 }
 
 animate();
+
+
 
