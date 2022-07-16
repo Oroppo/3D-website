@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import * as THREE from 'three';
 
 import  {OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import  {GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as dat from 'dat.gui';
 
 import atmosphereVertexShader from './Shaders/atmosphereVertex.glsl';
@@ -81,7 +82,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 let gridHelper = new THREE.GridHelper(100, 100);
 scene.add(gridHelper);
 var axesHelper = new THREE.AxesHelper(1);
-axesHelper.applyMatrix(new THREE.Matrix4().makeTranslation(1.5, 0, -1.5));
+axesHelper.applyMatrix4(new THREE.Matrix4().makeTranslation(1.5, 0, -1.5));
 axesHelper.updateMatrixWorld(true);
 scene.add(axesHelper);
 
@@ -117,10 +118,45 @@ starGeometry.setAttribute('position',new THREE.Float32BufferAttribute(starVertic
 const planetTexture = new THREE.TextureLoader().load('Earth.jpg');
 const normalTexture = new THREE.TextureLoader().load('NormalMap.jpg');
 
-const card = new THREE.Plane({
-  normal: new THREE.Vector3(10,10,10),
-  constant: 5
+//TODO: create am information card in Blender
+const amnesiaTexture = new THREE.TextureLoader().load('Me.jpg');
+const genericCard = new GLTFLoader().load('Models/Card.glb', function(gltf){
+  scene.add( gltf.scene );
+
+		gltf.animations; // Array<THREE.AnimationClip>
+		gltf.scene; // THREE.Group
+		gltf.scenes; // Array<THREE.Group>
+		gltf.cameras; // Array<THREE.Camera>
+		gltf.asset; // Object
+},function(xhr){
+  console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+},function(error){
+  console.log( 'An error happened' );
 })
+const cardMaterial = new THREE.MeshPhongMaterial({ map: planetTexture});
+const CardMaterial2 = new THREE.PointsMaterial({
+  color: 0xaaaaaa
+})
+const amnesiaCard = new THREE.Mesh(
+  genericCard,
+  CardMaterial2
+)
+
+scene.add(amnesiaCard);
+
+
+const CardFolder = gui.addFolder('Cards')
+
+CardFolder.add(amnesiaCard.rotation,'x', -3, 3,0.01)
+CardFolder.add(amnesiaCard.rotation,'y', -3, 3,0.01)
+CardFolder.add(amnesiaCard.rotation,'z', -3, 3,0.01)
+CardFolder.add(amnesiaCard.position,'x', -60, 60,0.5)
+CardFolder.add(amnesiaCard.position,'y', -60, 60,0.5)
+CardFolder.add(amnesiaCard.position,'z', -60, 60,0.5)
+CardFolder.open()
+
+
+
 
 const planet = new THREE.Mesh(
   new THREE.SphereGeometry(3,32,32),
@@ -191,9 +227,18 @@ cameraFolder.open()
 
 //TODO Add the sections for each button in 3D space (Teams, Projects, Bio,  Contact)
 
+
+
 const teams = document.querySelector('#Teams')
 teams.addEventListener('mouseover',()=>{
   Selection.play();
+}
+)
+teams.addEventListener('click',()=>{
+  gsap.to(camera.position,{
+    x: 50,
+    duration: 4
+  })
 }
 )
 const bio = document.querySelector('#Bio')
@@ -201,7 +246,13 @@ bio.addEventListener('mouseover',()=>{
   Selection.play();
 }
 )
-//TODO: Fix # names in html
+bio.addEventListener('click',()=>{
+  gsap.to(camera.position,{
+    x: -2,
+    duration: 4
+  })
+}
+)
 const projects = document.querySelector('#Projects')
 projects.addEventListener('mouseover',()=>{
   Selection.play();
@@ -216,23 +267,21 @@ start.addEventListener('mouseover',()=>{
 
 function animate(){
 
-  group.rotation.y += 0.005;
+
 
 gsap.to(planet.rotation,{
-  x: mouse.x % planet.rotation.x,
-  y: planet.rotation.y + (mouse.y*0.5),
+  x: planet.rotation.x + (mouse.x*0.5),
+  y: planet.rotation.y + (mouse.x*0.5),
   duration: 2
 })
 
+  group.rotation.y += 0.005; 
   moon.rotation.x += 0.01;
   moon.rotation.y += 0.005;
   moon.rotation.z += 0.01;
 
   requestAnimationFrame(animate);
   renderer.render( scene, camera );
-
-
-
 
 }
 
